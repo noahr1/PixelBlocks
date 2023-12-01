@@ -1,77 +1,65 @@
-var gBlockSize = 10;
-
-const clamp = (min, max, num) => Math.min(Math.max(min, num), max);
+var GBlockSize = 8;
 
 class Block {
-    constructor(x, y, bT) {
+    constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.size = gBlockSize;
-        this.bT = bT;
+        this.properties = [];
+    }
+    addProp(property) {
+        this.properties.push(property);
+        return this;
     }
     draw(ctx) {
-        if(this.bT == "dirt") {
-            ctx.fillStyle = "#92745B";
-        }else if(this.bT == "water") {
-            ctx.fillStyle = "blue";
-        }else if(this.bT == "grass") {
-            ctx.fillStyle = "green";
-        }else if(this.bT == "gravel") {
-            ctx.fillStyle = "gray";
-        }
-        ctx.strokeRect(this.x, this.y, this.size, this.size);
-        ctx.fillRect(this.x, this.y, this.size, this.size);
+        //ctx.strokeStyle = "black";
+        //ctx.strokeRect(this.x, this.y, GBlockSize, GBlockSize);
     }
-    getSize(){
-        return this.size;
-    }
-    getPos() {
-        return {x: this.x, y: this.y};
-    }
-    getBB(map) {
-        if((this.y / 10) - 1 > 0) {
-            return map[this.x / 10][(this.y / 10) - 1];
-        }
-    }
-    getBU(map, rows) {
-        if((this.y / 10) + 1 < rows * 10) {
-            return map[this.x / 10][(this.y / 10) + 1];
-        }
-    }
-    getSurrounding(map) {
-        var results = {
-            ba: null,
-            bb: null,
-            bl: null,
-            br: null,
-            bal: null,
-            bar: null,
-            bbl: null,
-            bbr: null
-        };
+}
 
-        //get the block above
-        results.ba = map[this.x / 10][(this.y / 10) + 1];
-        //get the block below
-        results.bb = map[this.x / 10][(this.y / 10) - 1];
-        //get the block to the left
-        results.bl = map[(this.x / 10) - 1][this.y / 10];
-        //get the block to the right
-        results.br = map[this.x / 10][(this.y / 10) - 1];
-        //get the block top left
-        results.bal = map[this.x / 10][(this.y / 10) - 1];
-        //get the block top right
-        results.bar = map[this.x / 10][(this.y / 10) - 1];
-        //get the block bottom left
-        results.bbl = map[this.x / 10][(this.y / 10) - 1];
-        //get the block bottom right
-        results.bbr = map[this.x / 10][(this.y / 10) - 1];
-
-        return results;
+function divided(times, initval, rate) {
+    var start = initval;
+    for(var i = 0; i < times; i++) {
+        start /= rate;
     }
-    update(map, rows, cols) {
-        if(this.getBB(map) == 0) {
-            this.y = clamp(0, rows * 10, this.y - 10);
-        }
+    return start;
+}
+
+class Dirt extends Block {
+    constructor(x, y) {
+        super(x, y);
+    }
+    draw(ctx) {
+        super.draw(ctx);
+        ctx.fillStyle = `hsl(29.7, 30%, ${divided(this.properties[0].value, 47, 1.005)}%)`;
+        ctx.fillRect(this.x, this.y, GBlockSize, GBlockSize);
+    }
+}
+
+class Grass extends Block {
+    constructor(x, y) {
+        super(x, y);
+    }
+    draw(ctx) {
+        super.draw(ctx);
+        ctx.fillStyle = "#7CFC00";
+        ctx.fillRect(this.x, this.y, GBlockSize, GBlockSize);
+    }
+}
+
+class Water extends Block {
+    constructor(x, y) {
+        super(x, y);
+    }
+    draw(ctx) {
+        super.draw(ctx);
+        ctx.fillStyle = `hsl(245, 92%, ${divided(this.properties[0].value, 53, 1.005)}%)`;
+        ctx.fillRect(this.x, this.y, GBlockSize, GBlockSize);
+    }
+}
+
+class Property {
+    constructor(name, value) {
+        this.name = name;
+        this.value = value;
     }
 }

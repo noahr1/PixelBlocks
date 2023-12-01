@@ -5,8 +5,8 @@ sim.height = 900;
 
 // global scope variables
 let blocks;
-var cols = sim.width / gBlockSize;
-var rows = sim.height / gBlockSize;
+var cols = Math.floor(sim.width / GBlockSize);
+var rows = Math.floor(sim.height / GBlockSize);
 
 // helper functions
 function createArray(width, height, empty) {
@@ -30,15 +30,10 @@ function RenderMap(map) {
 }
 
 
+
 // simulator loops
 function update() {
-    for(var x = 0; x < cols; x++) {
-        for(var y = 0; y < rows; y++) {
-            if(blocks[x][y] != 0) {
-                blocks[x][y].update(blocks, rows, cols);
-            }
-        }
-    }
+   
 }
 
 function render() {
@@ -57,7 +52,7 @@ function init() {
     window.requestAnimationFrame(tick);
     ctx.transform(1, 0, 0, -1, 0, sim.height);
     blocks = createArray(cols, rows, true);
-    blocks = TerrainGen(blocks, cols, rows, sim.getBoundingClientRect());
+    TerrainGen(blocks, cols, rows, sim.getBoundingClientRect());
 }
 
 init();
