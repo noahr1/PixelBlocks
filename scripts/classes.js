@@ -16,14 +16,6 @@ class Block {
     }
 }
 
-function divided(times, initval, rate) {
-    var start = initval;
-    for(var i = 0; i < times; i++) {
-        start /= rate;
-    }
-    return start;
-}
-
 class Dirt extends Block {
     constructor(x, y) {
         super(x, y);
@@ -56,6 +48,38 @@ class Water extends Block {
         ctx.fillRect(this.x, this.y, GBlockSize, GBlockSize);
     }
 }
+
+function divided(times, initval, rate) {
+    var start = initval;
+    for(var i = 0; i < times; i++) {
+        start /= rate;
+    }
+    return start;
+}
+
+class Chunk {
+    constructor(cols, rows) {
+        this.cols = cols;
+        this.rows = rows;
+        this.blocks = createArray(cols, rows);
+    }
+    draw(ctx) {
+        for(var x = 0; x < this.cols; x++) {
+            for(var y = 0; y < this.rows; y++) {
+                if(this.blocks[x][y] != 0) {
+                    this.blocks[x][y].draw(ctx);
+                }
+            }
+        }
+    }
+    addToMap(x, y, item) {
+        this.blocks[x][y] = item;
+        //console.log(this.blocks[x], x);
+    }
+    getMapIndex(x, y) {
+        return this.blocks[x][y];
+    }
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 
 class Property {
     constructor(name, value) {
